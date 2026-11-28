@@ -1,42 +1,32 @@
 class Solution {
 public:
     int search(vector<int>& nums, int target) {
-        
-        int start = 0 , end = nums.size()-1 , mid;
-
-        while (start <= end)
-        {
-            mid = start + (end - start)/2;
-
-            if (nums[mid]==target){ // if the curr idx is the target , return 
+        int l = 0, r = nums.size()-1;
+        while (l <= r) {
+            int mid = (l+r) / 2;
+            if (target == nums[mid])
                 return mid;
+            // there exists rotation; the middle element is in the left part of the array
+            if (nums[mid] > nums[r]) {
+                if (target < nums[mid] && target >= nums[l])
+                    r = mid - 1;
+                else
+                    l = mid + 1;
             }
-
-            // check if the left side is sorted 
-
-            if (nums[start] <= nums [mid]){
-                // check if the nums present in the sorted left side 
-                // eg start -> mid
-                if ( nums[start] <= target  && target<= nums[mid]){
-                    end = mid -1 ; // move the end to search the left side only
-                }
-                else {
-                    start = mid +1;
-                    // else move the start to search the right side 
-                }
+            // there exists rotation; the middle element is in the right part of the array
+            else if (nums[mid] < nums[l]) {
+                if (target > nums[mid] && target <= nums[r])
+                    l = mid + 1;
+                else
+                    r = mid - 1;
             }
-            
+            // there is no rotation; just like normal binary search
             else {
-                // else right side must be sorted 
-                // eg mid -> end 
-                if ( nums[mid]<= target && target <= nums[end]){
-                    start = mid + 1 ; // move start to find the right side 
-                }
-                else {
-                    end = mid -1 ;
-                }
+                if (target < nums[mid])
+                    r = mid - 1;
+                else
+                    l = mid + 1;
             }
-
         }
         return -1;
     }
